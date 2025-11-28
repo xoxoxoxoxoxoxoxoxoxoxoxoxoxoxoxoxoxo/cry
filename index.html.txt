@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>:::OCTOBER:::</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'VT323', monospace;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.2;
+            z-index: 1;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='2' numOctaves='8' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            animation: grain 0.15s steps(10) infinite;
+        }
+
+        @keyframes grain {
+            0%, 100% { transform: translate(0, 0); }
+            10% { transform: translate(-5%, -5%); }
+            20% { transform: translate(-10%, 5%); }
+            30% { transform: translate(5%, -10%); }
+            40% { transform: translate(-5%, 15%); }
+            50% { transform: translate(-10%, 5%); }
+            60% { transform: translate(15%, 0); }
+            70% { transform: translate(0, 10%); }
+            80% { transform: translate(-15%, 0); }
+            90% { transform: translate(10%, 5%); }
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.4),
+                rgba(0, 0, 0, 0.4) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .container {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        .glitch-text {
+            font-size: 7rem;
+            letter-spacing: 0.8rem;
+            position: relative;
+            filter: blur(0px);
+        }
+
+        .eye-container {
+            margin: 2rem 0;
+            font-size: 2rem;
+            letter-spacing: 0.5rem;
+            line-height: 2rem;
+            white-space: pre;
+            animation: eyeBlink 4s infinite;
+        }
+
+        @keyframes eyeBlink {
+            0%, 45%, 55%, 100% { 
+                opacity: 1;
+            }
+            48%, 52% { 
+                opacity: 0.1;
+            }
+        }
+
+        .subtitle {
+            font-size: 2rem;
+            letter-spacing: 1.5rem;
+            margin-top: 1rem;
+            opacity: 0.7;
+            animation: flicker 2s infinite;
+            cursor: pointer;
+        }
+
+        .subtitle:hover {
+            opacity: 1;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 0.7; }
+            50% { opacity: 0.3; }
+        }
+
+        .terminal {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            letter-spacing: 0.2rem;
+            opacity: 0.4;
+            z-index: 10;
+        }
+
+        .cursor-blink {
+            animation: blink-cursor 1s infinite;
+        }
+
+        @keyframes blink-cursor {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .corner-text {
+            position: fixed;
+            font-size: 0.8rem;
+            letter-spacing: 0.2rem;
+            opacity: 0.3;
+            z-index: 10;
+        }
+
+        .top-left {
+            top: 1.5rem;
+            left: 1.5rem;
+        }
+
+        .top-right {
+            top: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .bottom-left {
+            bottom: 1.5rem;
+            left: 1.5rem;
+        }
+
+        .bottom-right {
+            bottom: 1.5rem;
+            right: 1.5rem;
+        }
+
+        .vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            box-shadow: inset 0 0 300px rgba(0, 0, 0, 0.95);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .distortion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(255, 255, 255, 0.02) 2px,
+                    rgba(255, 255, 255, 0.02) 4px
+                );
+        }
+
+        .glitch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+            opacity: 0;
+            background: #fff;
+        }
+
+        .subliminal {
+            position: fixed;
+            font-size: 1.5rem;
+            letter-spacing: 0.3rem;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 7;
+            white-space: nowrap;
+            text-align: center;
+            max-width: 90vw;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            .glitch-text {
+                font-size: 3.5rem;
+                letter-spacing: 0.4rem;
+            }
+            .subtitle {
+                font-size: 1.2rem;
+                letter-spacing: 0.8rem;
+            }
+            .eye-container {
+                font-size: 1.5rem;
+                margin: 1.5rem 0;
+            }
+            .terminal {
+                font-size: 0.8rem;
+                bottom: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .glitch-text {
+                font-size: 2.5rem;
+                letter-spacing: 0.3rem;
+            }
+            .subtitle {
+                font-size: 1rem;
+                letter-spacing: 0.5rem;
+            }
+            .eye-container {
+                font-size: 1.2rem;
+                margin: 1rem 0;
+            }
+            .corner-text {
+                font-size: 0.6rem;
+            }
+            .top-left, .top-right {
+                top: 1rem;
+            }
+            .bottom-left, .bottom-right {
+                bottom: 1rem;
+            }
+            .top-left, .bottom-left {
+                left: 1rem;
+            }
+            .top-right, .bottom-right {
+                right: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="scanlines"></div>
+    <div class="distortion"></div>
+    <div class="vignette"></div>
+    <div class="glitch-overlay" id="glitchOverlay"></div>
+    <div class="subliminal" id="subliminal"></div>
+    
+    <div class="corner-text top-left" id="cornerTL">PRESENT DAY</div>
+    <div class="corner-text top-right" id="cornerTR">PRESENT TIME</div>
+    <div class="corner-text bottom-left" id="cornerBL">LAYER:07</div>
+    <div class="corner-text bottom-right" id="cornerBR">PROTOCOL:INIT</div>
+    
+    <div class="container">
+        <div class="glitch-text" id="mainText">OCTOBER</div>
+        
+        <div class="eye-container" id="eyes">◉    ◉</div>
+        
+        <a href="https://oguser.com/october" target="_blank" class="subtitle" style="text-decoration: none; color: inherit; transition: opacity 0.3s;">OGUSER</a>
+    </div>
+    
+    <div class="terminal" id="terminal">
+        &gt; WATCHING<span class="cursor-blink">_</span>
+    </div>
+
+    <script>
+        const mainText = document.getElementById('mainText');
+        const glitchOverlay = document.getElementById('glitchOverlay');
+        const subliminal = document.getElementById('subliminal');
+        
+        // Messages subliminaux
+        const subliminalMessages = [
+            'HIDE',
+            'HELP',
+            'CAN GOD ENTER IN MY DREAM',
+            'TO TELL ME MY DEATH DATE',
+            'PRAISE GOD',
+            'I SEE U',
+            'HI',
+            'YOU ARE BEING WATCHED',
+            'WAKE UP',
+            'THEY KNOW',
+            'DON\'T LOOK BEHIND YOU',
+            'IT\'S TOO LATE',
+            'FOLLOW ME',
+            'ARE YOU REAL',
+            'OBEY',
+            'CONSUME',
+            'WHO IS WATCHING',
+            'DISCONNECT',
+            'NO ESCAPE'
+        ];
+        
+        function showSubliminal() {
+            const message = subliminalMessages[Math.floor(Math.random() * subliminalMessages.length)];
+            const randomOpacity = Math.random() * 0.2 + 0.1; // 0.1 à 0.3 (un peu plus visible)
+            
+            // Zones à éviter (centre de l'écran où se trouvent OCTOBER et OGUSER)
+            let randomTop, randomLeft;
+            let inSafeZone = false;
+            
+            while (!inSafeZone) {
+                randomTop = Math.random() * 70 + 15; // 15% à 85%
+                randomLeft = Math.random() * 70 + 15; // 15% à 85%
+                
+                // Éviter la zone centrale (30-70% verticalement et 20-80% horizontalement)
+                const isInCenterZone = (randomTop > 30 && randomTop < 70) && (randomLeft > 20 && randomLeft < 80);
+                
+                if (!isInCenterZone) {
+                    inSafeZone = true;
+                }
+            }
+            
+            const randomSize = Math.random() * 1.5 + 1; // 1rem à 2.5rem
+            
+            subliminal.textContent = message;
+            subliminal.style.top = randomTop + '%';
+            subliminal.style.left = randomLeft + '%';
+            subliminal.style.transform = 'translate(-50%, -50%)';
+            subliminal.style.fontSize = randomSize + 'rem';
+            subliminal.style.opacity = randomOpacity;
+            
+            setTimeout(() => {
+                subliminal.style.opacity = '0';
+            }, Math.random() * 300 + 200); // 200-500ms
+        }
+        
+        // Animation des yeux ASCII plus creepy
+        const eyes = document.getElementById('eyes');
+        const eyeStates = [
+            '◉    ◉',
+            '●    ●',
+            '⊙    ⊙',
+            '◉    ◉',
+            '○    ○',
+            '-    -',
+            '◉    ◉',
+            '▓    ▓',
+            '◉    ◉',
+            '◉    ●',
+            '●    ◉',
+            '◉    ◉'
+        ];
+        
+        let currentEyeIndex = 0;
+        
+        function animateEyes() {
+            if (Math.random() > 0.80) {
+                currentEyeIndex = (currentEyeIndex + 1) % eyeStates.length;
+                eyes.textContent = eyeStates[currentEyeIndex];
+            }
+        }
+        
+        setInterval(animateEyes, 250);
+
+        // Messages terminal qui changent
+        const terminal = document.getElementById('terminal');
+        const terminalMessages = [
+            '&gt; WATCHING<span class="cursor-blink">_</span>',
+            '&gt; OBSERVING<span class="cursor-blink">_</span>',
+            '&gt; FOLLOWING<span class="cursor-blink">_</span>',
+            '&gt; CONNECTING<span class="cursor-blink">_</span>',
+            '&gt; ACCESSING<span class="cursor-blink">_</span>',
+            '&gt; WHO ARE YOU<span class="cursor-blink">_</span>',
+            '&gt; I SEE YOU<span class="cursor-blink">_</span>',
+            '&gt; WATCHING<span class="cursor-blink">_</span>'
+        ];
+        
+        let termIndex = 0;
+        setInterval(() => {
+            if (Math.random() > 0.85) {
+                termIndex = (termIndex + 1) % terminalMessages.length;
+                terminal.innerHTML = terminalMessages[termIndex];
+            }
+        }, 3000);
+
+        // Texte des coins qui glitch
+        const corners = ['cornerTL', 'cornerTR', 'cornerBL', 'cornerBR'];
+        const cornerGlitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+        
+        function glitchCorners() {
+            if (Math.random() > 0.95) {
+                corners.forEach(id => {
+                    const el = document.getElementById(id);
+                    const original = el.textContent;
+                    const glitched = original.split('').map(c => 
+                        Math.random() > 0.7 ? cornerGlitchChars[Math.floor(Math.random() * cornerGlitchChars.length)] : c
+                    ).join('');
+                    el.textContent = glitched;
+                    setTimeout(() => el.textContent = original, 100);
+                });
+            }
+        }
+        
+        setInterval(glitchCorners, 200);
+
+        // GLITCH INTENSE avec FLASH et BLUR sur OCTOBER
+        function extremeGlitch() {
+            if (Math.random() > 0.93) {
+                // Flash blanc violent
+                glitchOverlay.style.opacity = Math.random() * 0.8 + 0.2;
+                
+                // Message subliminal après le flash
+                setTimeout(() => {
+                    showSubliminal();
+                }, 40);
+                
+                setTimeout(() => {
+                    glitchOverlay.style.opacity = '0';
+                }, 50);
+                
+                // Blur intense
+                const blurAmount = Math.random() * 8 + 2;
+                mainText.style.filter = `blur(${blurAmount}px)`;
+                
+                // Transformation violente du texte
+                mainText.style.transform = `
+                    translate(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px) 
+                    scale(${0.9 + Math.random() * 0.2})
+                    skew(${Math.random() * 10 - 5}deg)
+                `;
+                
+                // Opacity glitch
+                mainText.style.opacity = Math.random() * 0.5 + 0.5;
+                
+                setTimeout(() => {
+                    mainText.style.filter = 'blur(0px)';
+                    mainText.style.transform = '';
+                    mainText.style.opacity = '1';
+                }, 80);
+            }
+        }
+        
+        setInterval(extremeGlitch, 100);
+
+        // Flash écran complet ultra violent avec subliminal
+        function screenFlash() {
+            if (Math.random() > 0.97) {
+                document.body.style.background = '#fff';
+                glitchOverlay.style.opacity = '1';
+                
+                // Message subliminal immédiat après flash
+                setTimeout(() => {
+                    showSubliminal();
+                }, 30);
+                
+                setTimeout(() => {
+                    document.body.style.background = '#000';
+                    glitchOverlay.style.opacity = '0';
+                }, 40);
+            }
+        }
+        
+        setInterval(screenFlash, 150);
+
+        // Glitch text rapide et violent
+        const glitchChars = '▓▒░█▀▄▌▐│─┼╬═║╔╗╚╝┃━┏┓┗┛┣┫╋';
+        function textGlitch() {
+            if (Math.random() > 0.92) {
+                const original = 'OCTOBER';
+                const glitched = original.split('').map(c => 
+                    Math.random() > 0.6 ? glitchChars[Math.floor(Math.random() * glitchChars.length)] : c
+                ).join('');
+                mainText.textContent = glitched;
+                
+                setTimeout(() => {
+                    mainText.textContent = original;
+                }, 60);
+            }
+        }
+        
+        setInterval(textGlitch, 80);
+
+        // Distorsion mentale de tout l'écran
+        function mentalBreak() {
+            if (Math.random() > 0.985) {
+                document.body.style.transform = `scale(${0.95 + Math.random() * 0.1})`;
+                document.body.style.filter = `blur(${Math.random() * 5}px) contrast(${1 + Math.random() * 0.5})`;
+                
+                setTimeout(() => {
+                    document.body.style.transform = '';
+                    document.body.style.filter = '';
+                }, 100);
+            }
+        }
+        
+        setInterval(mentalBreak, 120);
+    </script>
+</body>
+</html>
